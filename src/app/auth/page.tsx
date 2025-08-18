@@ -1,34 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormData } from "@/lib/validation";
 import { useAuth } from "@/context/AuthContext";
 import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import styles from "./auth.module.scss";
-import { RawUser, User } from "@/types/user";
 
 export default function AuthPage() {
-  const { setUser } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { setUser } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
+  const validatePhone = (value: string) => /^09\d{9}$/.test(value.trim());
 
-  const onSubmit = async () => {
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validatePhone(phone)) {
+      setError("شماره تلفن معتبر نیست (باید با 09 شروع و 11 رقم باشد)");
+      return;
+    }
+
     const res = await fetch("https://randomuser.me/api/?results=1&nat=us");
-    const json = await res.json();
+    const data = await res.json();
+    const rawUser = data.results[0];
 
-    const rawUser: RawUser = json.results[0];
-
-    const formattedUser: User = {
+    const formattedUser = {
       fullName: `${rawUser.name.first} ${rawUser.name.last}`,
       email: rawUser.email,
       phone: rawUser.phone,
@@ -39,21 +38,25 @@ export default function AuthPage() {
       thumbnail: rawUser.picture.thumbnail,
     };
 
-    setUser(formattedUser); // use context
+    setUser(formattedUser);
     router.push("/dashboard");
   };
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <div className={styles.card}>
         <h1>Login</h1>
-        <Input
-          label="Phone Number"
-          {...register("phone")}
-          error={errors.phone?.message}
-        />
-        <Button type="submit">Login</Button>
-      </form>
+        <form onSubmit={onSubmit}>
+          <Input
+            label="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="09xxxxxxxxx"
+            error={error}
+          />
+          <Button type="submit">Login</Button>
+        </form>
+      </div>
     </div>
   );
 }

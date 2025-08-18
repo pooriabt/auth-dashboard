@@ -1,4 +1,5 @@
 import "@/styles/globals.scss";
+
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {

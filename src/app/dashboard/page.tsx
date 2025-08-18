@@ -17,8 +17,9 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboard}>
-      <h1>Welcome to the Dashboard</h1>
-      <div className={styles.profileCard}>
+      <div className={styles.card}>
+        <h1>Dashboard</h1>
+
         <img src={user.thumbnail} alt="User thumbnail" />
         <p>
           <strong>Name:</strong> {user.fullName}
@@ -35,15 +36,16 @@ export default function Dashboard() {
         <p>
           <strong>Location:</strong> {user.city}, {user.state}, {user.country}
         </p>
+
+        <button
+          onClick={() => {
+            setUser(null);
+            router.push("/auth");
+          }}
+        >
+          Logout
+        </button>
       </div>
-      <button
-        onClick={() => {
-          setUser(null);
-          router.push("/auth");
-        }}
-      >
-        Logout
-      </button>
     </div>
   );
 }
