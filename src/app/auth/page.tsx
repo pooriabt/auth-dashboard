@@ -3,9 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import Input from "@/components/Input/Input";
+import { z } from "zod";
 import Button from "@/components/Button/Button";
 import styles from "./auth.module.scss";
+
+// Zod validation schema
+const schema = z.object({
+  phone: z
+    .string()
+    .regex(
+      /^09\d{9}$/,
+      "شماره تلفن معتبر نیست (باید با 09 شروع و 11 رقم باشد)"
+    ),
+});
 
 export default function AuthPage() {
   const [phone, setPhone] = useState("");
@@ -13,15 +23,19 @@ export default function AuthPage() {
   const router = useRouter();
   const { setUser } = useAuth();
 
-  const validatePhone = (value: string) => /^09\d{9}$/.test(value.trim());
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const result = schema.safeParse({ phone });
 
-    if (!validatePhone(phone)) {
-      setError("شماره تلفن معتبر نیست (باید با 09 شروع و 11 رقم باشد)");
+    if (!result.success) {
+      const issue = result.error.issues?.[0];
+      if (issue) {
+        setError(issue.message);
+      }
       return;
     }
+
+    setError("");
 
     const res = await fetch("https://randomuser.me/api/?results=1&nat=us");
     const data = await res.json();
@@ -45,15 +59,22 @@ export default function AuthPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1>Login</h1>
-        <form onSubmit={onSubmit}>
-          <Input
-            label="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="09xxxxxxxxx"
-            error={error}
-          />
+        <h1>Sign In</h1>
+
+        <form onSubmit={onSubmit} className={styles.form}>
+          <div className={styles.inputRow}>
+            <label htmlFor="phone">Phone Number:</label>
+            <input
+              id="phone"
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="09xxxxxxxxx"
+            />
+          </div>
+
+          {error && <p className={styles.error}>{error}</p>}
+
           <Button type="submit">Login</Button>
         </form>
       </div>
