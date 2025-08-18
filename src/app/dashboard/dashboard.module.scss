@@ -1,0 +1,27 @@
+.dashboard {
+  padding: 2rem;
+  text-align: center;
+
+  .profileCard {
+    margin-top: 2rem;
+    display: inline-block;
+    padding: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    text-align: left;
+
+    img {
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+  }
+
+  button {
+    margin-top: 2rem;
+  }
+}

@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import styles from "./auth.module.scss";
+import { RawUser, User } from "@/types/user";
 
 export default function AuthPage() {
   const { setUser } = useAuth();
@@ -23,15 +24,22 @@ export default function AuthPage() {
 
   const onSubmit = async () => {
     const res = await fetch("https://randomuser.me/api/?results=1&nat=us");
-    const data = await res.json();
-    const user = data.results[0];
+    const json = await res.json();
 
-    setUser({
-      name: `${user.name.first} ${user.name.last}`,
-      email: user.email,
-      picture: user.picture.thumbnail,
-    });
+    const rawUser: RawUser = json.results[0];
 
+    const formattedUser: User = {
+      fullName: `${rawUser.name.first} ${rawUser.name.last}`,
+      email: rawUser.email,
+      phone: rawUser.phone,
+      birthDate: new Date(rawUser.dob.date).toLocaleDateString(),
+      city: rawUser.location.city,
+      state: rawUser.location.state,
+      country: rawUser.location.country,
+      thumbnail: rawUser.picture.thumbnail,
+    };
+
+    setUser(formattedUser); // use context
     router.push("/dashboard");
   };
 
