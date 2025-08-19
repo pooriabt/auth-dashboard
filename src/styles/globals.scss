@@ -14,3 +14,33 @@ a {
   color: #2563eb;
   text-decoration: none;
 }
+input {
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  backdrop-filter: blur(5px);
+  outline: none;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+button {
+  padding: 0.75rem;
+  width: 100%;
+  font-size: 1rem;
+  background: #ff5f6d;
+  background: linear-gradient(to right, #ff5f6d, #ffc371);
+  border: 1px solid rgb(255, 255, 255);
+  color: #fff;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(to right, #ffc371, #ff5f6d);
+  }
+}

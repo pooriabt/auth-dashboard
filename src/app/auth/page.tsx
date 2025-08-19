@@ -7,7 +7,6 @@ import { z } from "zod";
 import Button from "@/components/Button/Button";
 import styles from "./auth.module.scss";
 
-// Zod validation schema
 const schema = z.object({
   phone: z
     .string()
@@ -63,7 +62,7 @@ export default function AuthPage() {
 
         <form onSubmit={onSubmit} className={styles.form}>
           <div className={styles.inputRow}>
-            <label htmlFor="phone">Phone Number:</label>
+            <label htmlFor="phone">Phone Number :</label>
             <input
               id="phone"
               type="text"
@@ -75,7 +74,9 @@ export default function AuthPage() {
 
           {error && <p className={styles.error}>{error}</p>}
 
-          <Button type="submit">Login</Button>
+          <Button type="submit" className={styles.loginButton}>
+            Login
+          </Button>
         </form>
       </div>
     </div>
